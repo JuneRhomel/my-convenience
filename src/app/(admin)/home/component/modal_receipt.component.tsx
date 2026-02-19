@@ -8,13 +8,14 @@ import { ReceiptFormState } from '../hook/home.hook';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
 
 interface ModalReceiptComponentInterfce {
-    modelOpen: boolean
-    addReceiptError: string | null
-    handleCloseModal: () => void
-    register: UseFormRegister<ReceiptFormState>
-    handleFormSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>
-    errors: FieldErrors<ReceiptFormState>
-    isSubmitting: boolean
+    modelOpen: boolean;
+    addReceiptError: string | null;
+    handleCloseModal: () => void;
+    register: UseFormRegister<ReceiptFormState>;
+    handleFormSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
+    errors: FieldErrors<ReceiptFormState>;
+    isSubmitting: boolean;
+    isEdit?: boolean;
 }
 
 export default function ModalReceiptComponent({
@@ -24,16 +25,19 @@ export default function ModalReceiptComponent({
     errors,
     handleFormSubmit,
     isSubmitting,
-    addReceiptError
+    addReceiptError,
+    isEdit = false,
 }: ModalReceiptComponentInterfce): React.ReactElement {
+    const title = isEdit ? "Edit Receipt" : "Add Receipt";
     return (
-        <PopupComponent title="Add Receipt" isOpen={modelOpen} onClose={handleCloseModal}  >
-            <form onSubmit={handleFormSubmit}
-                noValidate>
+        <PopupComponent title={title} isOpen={modelOpen} onClose={handleCloseModal}>
+            <form onSubmit={handleFormSubmit} noValidate>
                 <div>
                     <InputImgeComponent
                         labelName="Receipt image"
-                        register={register('image', { required: 'Image is required' })}
+                        register={register("image", {
+                            required: isEdit ? false : "Image is required",
+                        })}
                         error={errors.image?.message}
                     />
                 </div>

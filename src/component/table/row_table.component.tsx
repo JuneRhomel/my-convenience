@@ -11,7 +11,7 @@ export default function RowTableComponent({
         return cells.map((cell, index) => (
             <td
                 key={index}
-                className="px-4 py-2 text-sm text-zinc-700 whitespace-nowrap"
+                className="px-4 py-2 text-sm text-zinc-700   whitespace-nowrap"
             >
                 {cell}
             </td>

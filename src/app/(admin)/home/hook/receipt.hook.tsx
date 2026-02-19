@@ -5,6 +5,7 @@ import { formatMonthNumberToText } from "@/shared/format_date_text.shered";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type React from "react";
+import { useState } from "react";
 
 export default function useReceiptHook() {
     const searchParams = useSearchParams();
@@ -15,6 +16,7 @@ export default function useReceiptHook() {
     const now = new Date();
     const month = monthParam !== null ? Number(monthParam) : now.getMonth() + 1;
     const year = yearParam !== null ? Number(yearParam) : now.getFullYear();
+    const [exportIsLoading, setexportIsLoading] = useState(false)
 
     const getReceiptList = async (): Promise<ReceiptItem[]> => {
         const data: ReceiptItem[] = await apiRequest({
@@ -25,6 +27,7 @@ export default function useReceiptHook() {
     };
 
     const generateExcel = async (): Promise<void> => {
+        setexportIsLoading(true)
         const fileData = await fetchFileFromApi(`/receipts/export?month=${month}&year=${year}`); // call your server action
         if (!fileData) return;
 
@@ -36,8 +39,10 @@ export default function useReceiptHook() {
         link.download = `${nameMonth}-20-${year}.xlsx`; // choose file name
         link.click();
         window.URL.revokeObjectURL(link.href);
+        setexportIsLoading(false)
 
     };
+
 
 
     const {
@@ -66,7 +71,8 @@ export default function useReceiptHook() {
         "Input Tax",
         "WTax",
         "Payment",
-        "Image"
+        "Image",
+        "action",
     ];
 
     const monthOptions: SelectOption[] = Array.from({ length: 12 }, (_, index) => {
@@ -132,6 +138,7 @@ export default function useReceiptHook() {
         handleYearChange,
         generateExcel,
         month,
-        year
+        year,
+        exportIsLoading,
     };
 }
